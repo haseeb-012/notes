@@ -87,7 +87,36 @@ Add public key:
 
 ```bash
 nano ~/.ssh/authorized_keys
+
 # Paste the contents of your local ~/.ssh/id_ed25519_sk.pub here
+
+```
+
+## SSH Directory and Authorized Keys Permissions
+
+These permission settings are essential security best practices for SSH:
+
+**`chmod 700 ~/.ssh`**
+
+- Sets the `.ssh` directory to read, write, and execute permissions for the owner only
+- Prevents other users on the system from accessing or listing your SSH keys
+- SSH will refuse to work if this directory has overly permissive permissions
+
+**`chmod 600 ~/.ssh/authorized_keys`**
+
+- Sets the authorized_keys file to read and write permissions for the owner only
+- Ensures no other user can modify the list of authorized public keys
+- SSH authentication will fail if this file has incorrect permissions (e.g., world-readable or group-writable)
+
+These restrictive permissions are critical because:
+
+- **Security**: They prevent unauthorized users from impersonating you via SSH
+- **SSH Requirements**: OpenSSH strictly enforces these permissions and will reject authentication attempts if permissions are too loose
+- **Key Integrity**: Guarantees that only you can modify which keys are authorized to access your account
+
+```bash
+chmod 600 ~/.ssh/authorized_keys
+chmod 700 ~/.ssh
 ```
 
 ---
@@ -132,6 +161,7 @@ sudo service ssh restart
 ⚠️ Do NOT restart SSH until user login is confirmed
 
 ---
+
 ## 6.5. Enable Automatic Security Updates (unattended-upgrades)
 
 Install unattended-upgrades:
