@@ -12,7 +12,7 @@
 - Setting Up SSL Certificates
 ### 1. Preparing the VPS Environment
 
-#### Get you VPS Hosting here : [Hostinger VPS](https://greatstack.dev/go/hostinger-vps)
+#### Get you VPS Hosting here : [Hostinger VPS](https://hostinger.pk?REFERRALCODE=AJGHASEEBLEL)
 
 Log in to Your VPS in Terminal 
 
@@ -48,7 +48,7 @@ Install Git
 
 ###  2. Setting Up the MongoDB Database
 
-If you want to setup MongoDB on VPS Follow this Guide: [click here](https://github.com/GreatStackDev/notes/blob/main/MongoDB_Setup_on_VPS.md)
+If you want to setup MongoDB on VPS Follow this Guide: [click here](https://github.com/haseeb-012/notes/blob/main/MongoDB_Setup_on_VPS.md)
 
 ### 3. Deploying the Express and Node.js Backend
 
@@ -271,4 +271,4 @@ certbot renew --dry-run
 
 If you still need help in deployment:
 
-Contact us on email : greatstackdev@gmail.com
+Contact us on email : haseebsajjad666@gmail.com
