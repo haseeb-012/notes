@@ -269,6 +269,121 @@ Verify Auto-Renewal
 certbot renew --dry-run
 ```
 
+
+## 7. Production-ready Nginx Configuration (HTTPS)
+
+### 7.1 Frontend (React) Config
+
+```nginx
+# Redirect HTTP → HTTPS
+server {
+    listen 80;
+    server_name frontend.example.com www.frontend.example.com;
+    return 301 https://$host$request_uri;
+}
+
+# HTTPS frontend
+server {
+    listen 443 ssl;
+    server_name frontend.example.com www.frontend.example.com;
+
+    ssl_certificate /etc/letsencrypt/live/frontend.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/frontend.example.com/privkey.pem;
+
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-Content-Type-Options "nosniff";
+    add_header X-XSS-Protection "1; mode=block";
+
+    # Cache static assets
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2)$ {
+        root /var/www/react-app/dist;
+        access_log off;
+        expires 30d;
+    }
+
+    # Serve SPA
+    location / {
+        root /var/www/react-app/dist;
+        index index.html;
+        try_files $uri /index.html;
+    }
+}
+```
+
+---
+
+### 7.2 Backend (Express API) Config
+
+```nginx
+# Redirect HTTP → HTTPS
+server {
+    listen 80;
+    server_name api.example.com;
+    return 301 https://$host$request_uri;
+}
+
+# HTTPS backend reverse proxy
+server {
+    listen 443 ssl;
+    server_name api.example.com;
+
+    ssl_certificate /etc/letsencrypt/live/api.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/api.example.com/privkey.pem;
+
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-Content-Type-Options "nosniff";
+    add_header X-XSS-Protection "1; mode=block";
+
+    location / {
+        proxy_pass http://localhost:5000;
+        proxy_http_version 1.1;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+}
+```
+
+---
+
+## 8. Final Steps
+
+1. Test Nginx configuration:
+
+```bash
+sudo nginx -t
+```
+
+2. Reload Nginx:
+
+```bash
+sudo systemctl reload nginx
+```
+
+3. Ensure PM2 is running backend:
+
+```bash
+pm2 list
+```
+
+4. Firewall: close backend port from public if desired
+
+```bash
+sudo ufw deny 5000
+```
+
+---
+
+✅ **Now the MERN stack is fully production-ready with HTTPS, redirects, caching, and security headers.**
+
+---
+
+
 If you still need help in deployment:
 
 Contact us on email : haseebsajjad666@gmail.com
